@@ -41,10 +41,21 @@ public class UserService {
     public User createUser(String email, String password) {
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(10));
         User user = new User();
-        user.setId(UUID.randomUUID().toString());
         user.setEmail(email);
         user.setPassword(hashedPassword);
         userRepository.save(user);
         return user;
+    }
+
+    public void logout(String token) {
+        Optional<User> userOpt = userRepository.findByToken(token);
+
+        if (userOpt.isEmpty()) {
+            return;
+        }
+
+        User user = userOpt.get();
+        user.setToken(null);
+        userRepository.save(user);
     }
 }
