@@ -3,7 +3,7 @@ package com.estocaai.backend.Classes;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
+@Document(collection = "produtos")
 public class Produto {
     @Id
     private String id;

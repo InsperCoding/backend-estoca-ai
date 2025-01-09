@@ -58,4 +58,15 @@ public class UserService {
         user.setToken(null);
         userRepository.save(user);
     }
+
+    public boolean isTokenValid(String token) {
+        if (token == null || token.trim().isEmpty()) {
+            return false;
+        }
+
+        Optional<User> userOpt = userRepository.findByToken(token);
+        return userOpt.isPresent();
+    }
+
+
 }

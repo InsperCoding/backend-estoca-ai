@@ -1,6 +1,7 @@
 package com.estocaai.backend.User.Controller;
 import com.estocaai.backend.User.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,5 +21,10 @@ public class UserController {
     @PostMapping("/login")
     public String login(@RequestBody User user) {
         return userService.login(user.getEmail(), user.getPassword());
+    }
+
+    @GetMapping("/logout")
+    public void logout(@RequestBody User user) {
+        userService.logout(user.getToken());
     }
 }
