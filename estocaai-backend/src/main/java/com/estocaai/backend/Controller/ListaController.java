@@ -26,90 +26,141 @@ public class ListaController {
     @Autowired
     private UserService userService;
 
-    // Lista todas as listas
     @GetMapping
     public ResponseEntity<?> getAllListas(@RequestHeader(value = "Authorization") String token) {
         if (!userService.isTokenValid(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido ou ausente!");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Token inválido ou ausente!");
         }
+
         List<Lista> listas = listaRepository.findAll();
         return ResponseEntity.ok(listas);
     }
 
-    // Cria uma nova lista
     @PostMapping
     public ResponseEntity<?> createLista(@RequestBody Lista lista,
                                          @RequestHeader(value = "Authorization") String token) {
         if (!userService.isTokenValid(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido ou ausente!");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Token inválido ou ausente!");
         }
+
         Lista novaLista = listaRepository.save(lista);
         return ResponseEntity.status(HttpStatus.CREATED).body(novaLista);
     }
 
-    // Retorna os detalhes de uma lista específica
     @GetMapping("/{id}")
     public ResponseEntity<?> getListaById(@PathVariable String id,
                                           @RequestHeader(value = "Authorization") String token) {
         if (!userService.isTokenValid(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido ou ausente!");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Token inválido ou ausente!");
         }
+
         Lista lista = listaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Lista não encontrada"));
         return ResponseEntity.ok(lista);
     }
 
-    // Remove uma lista
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteLista(@PathVariable String id,
                                          @RequestHeader(value = "Authorization") String token) {
         if (!userService.isTokenValid(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido ou ausente!");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Token inválido ou ausente!");
         }
+
         listaRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
-    // Retorna os produtos de uma lista específica
+
     @GetMapping("/{id}/produtos")
     public ResponseEntity<?> getProdutosInLista(@PathVariable String id,
                                                 @RequestHeader(value = "Authorization") String token) {
         if (!userService.isTokenValid(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido ou ausente!");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Token inválido ou ausente!");
         }
+
         Lista lista = listaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Lista não encontrada"));
+
+        // Busca todos os produtos cujos IDs estejam em produtosIds
         List<Produto> produtos = produtoRepository.findAllById(lista.getProdutosIds());
         return ResponseEntity.ok(produtos);
     }
 
-    // Adiciona um produto a uma lista
+
     @PostMapping("/{id}/produtos/{id_produto}")
     public ResponseEntity<?> addProdutoToLista(@PathVariable String id,
                                                @PathVariable String id_produto,
+                                               @RequestParam int quantidade,
                                                @RequestHeader(value = "Authorization") String token) {
         if (!userService.isTokenValid(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido ou ausente!");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Token inválido ou ausente!");
         }
+
         Lista lista = listaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Lista não encontrada"));
+
         lista.getProdutosIds().add(id_produto);
+        lista.getProdutosQuantidades().add(quantidade);
+
         Lista listaAtualizada = listaRepository.save(lista);
         return ResponseEntity.ok(listaAtualizada);
     }
 
-    // Remove um produto de uma lista
     @DeleteMapping("/{id}/produtos/{id_produto}")
     public ResponseEntity<?> removeProdutoFromLista(@PathVariable String id,
                                                     @PathVariable String id_produto,
                                                     @RequestHeader(value = "Authorization") String token) {
         if (!userService.isTokenValid(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido ou ausente!");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Token inválido ou ausente!");
         }
+
         Lista lista = listaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Lista não encontrada"));
-        lista.getProdutosIds().remove(id_produto);
+
+        int index = lista.getProdutosIds().indexOf(id_produto);
+        if (index != -1) {
+            lista.getProdutosIds().remove(index);
+            lista.getProdutosQuantidades().remove(index);
+        }
+
         Lista listaAtualizada = listaRepository.save(lista);
         return ResponseEntity.ok(listaAtualizada);
     }
+
+    @PutMapping("/{id}/produtos/{produtoId}")
+    public ResponseEntity<?> updateProdutoQuantidade(@RequestHeader(value = "Authorization") String token,
+                                                     @PathVariable String id,
+                                                     @PathVariable String produtoId,
+                                                     @RequestParam int quantidade) {
+        if (!userService.isTokenValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido ou ausente!");
+        }
+
+        Lista lista = listaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Lista não encontrada"));
+
+        int index = lista.getProdutosIds().indexOf(produtoId);
+        if (index == -1) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado na lista!");
+        }
+
+        if (quantidade <= 0) {
+            lista.getProdutosIds().remove(index);
+            lista.getProdutosQuantidades().remove(index);
+        } else {
+            lista.getProdutosQuantidades().set(index, quantidade);
+        }
+
+        Lista listaAtualizada = listaRepository.save(lista);
+
+        return ResponseEntity.ok(listaAtualizada);
+    }
+
 }

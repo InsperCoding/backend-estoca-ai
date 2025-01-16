@@ -12,6 +12,7 @@ public class Lista {
     private String id;
     private String nome;
     private List<String> produtosIds = new ArrayList<>(); // Lista de IDs dos produtos
+    private List<Integer> produtosQuantidades = new ArrayList<>(); // Lista de quantidades dos produtos
 
     // Construtores
     public Lista() {}
@@ -43,5 +44,13 @@ public class Lista {
 
     public void setProdutosIds(List<String> produtosIds) {
         this.produtosIds = produtosIds;
+    }
+
+    public List<Integer> getProdutosQuantidades() {
+        return produtosQuantidades;
+    }
+
+    public void setProdutosQuantidades(List<Integer> produtosQuantidades) {
+        this.produtosQuantidades = produtosQuantidades;
     }
 }
