@@ -39,12 +39,12 @@ public class UserService {
     }
 
     public User createUser(String email, String password) {
-        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(10));
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(hashedPassword);
-        userRepository.save(user);
-        return user;
+            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(10));
+            User user = new User();
+            user.setEmail(email);
+            user.setPassword(hashedPassword);
+            userRepository.save(user);
+            return user;
     }
 
     public void logout(String token) {
@@ -58,6 +58,15 @@ public class UserService {
         user.setToken(null);
         userRepository.save(user);
     }
+
+     public User atualizarFotoPerfil(String userId, String base64Foto) {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+            user.setFotoPerfil(base64Foto);
+
+            return userRepository.save(user);
+        }
 
     public boolean isTokenValid(String token) {
         if (token == null || token.trim().isEmpty()) {
