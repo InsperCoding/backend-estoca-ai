@@ -14,6 +14,15 @@ public class User {
     private String email;
     private String password;
     private String token;
+    private String fotoPerfil;
+
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
+    }
 
     public User() {
         // Gera um UUID aleatório no momento em que o objeto é construído

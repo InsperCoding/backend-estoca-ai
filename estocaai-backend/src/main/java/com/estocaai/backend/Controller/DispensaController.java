@@ -112,4 +112,34 @@ public class DispensaController {
         Dispensa dispensaAtualizada = dispensaRepository.save(dispensa);
         return ResponseEntity.ok(dispensaAtualizada);
     }
+
+    @PutMapping("/{id}/produtos/{id_produto}")
+    public ResponseEntity<?> updateProdutoQuantidade(@RequestHeader(value = "Authorization") String token,
+                                                     @PathVariable String id,
+                                                     @PathVariable String id_produto,
+                                                     @RequestParam int quantidade) {
+        if (!userService.isTokenValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido ou ausente!");
+        }
+
+        Dispensa dispensa = dispensaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Dispensa não encontrada"));
+
+        int index = dispensa.getProdutosIds().indexOf(id_produto);
+        if (index == -1) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado na dispensa!");
+        }
+
+        if (quantidade <= 0) {
+            dispensa.getProdutosIds().remove(index);
+            dispensa.getProdutosQuantidades().remove(index);
+        } else {
+            dispensa.getProdutosQuantidades().set(index, quantidade);
+        }
+
+        Dispensa dispensaAtualizada = dispensaRepository.save(dispensa);
+
+        return ResponseEntity.ok(dispensaAtualizada);
+    }
+
 }

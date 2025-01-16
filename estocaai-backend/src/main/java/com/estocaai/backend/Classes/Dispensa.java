@@ -11,16 +11,17 @@ public class Dispensa {
     @Id
     private String id;
     private String nome;
-    private List<String> produtosIds = new ArrayList<>(); // Lista de IDs dos produtos
 
-    // Construtores
+    private List<String> produtosIds = new ArrayList<>();
+
+    private List<Integer> produtosQuantidades = new ArrayList<>();
+
     public Dispensa() {}
 
     public Dispensa(String nome) {
         this.nome = nome;
     }
 
-    // Getters e Setters
     public String getId() {
         return id;
     }
@@ -43,5 +44,13 @@ public class Dispensa {
 
     public void setProdutosIds(List<String> produtosIds) {
         this.produtosIds = produtosIds;
+    }
+
+    public List<Integer> getProdutosQuantidades() {
+        return produtosQuantidades;
+    }
+
+    public void setProdutosQuantidades(List<Integer> produtosQuantidades) {
+        this.produtosQuantidades = produtosQuantidades;
     }
 }
