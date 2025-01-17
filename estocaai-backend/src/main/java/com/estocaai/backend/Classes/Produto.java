@@ -9,6 +9,15 @@ public class Produto {
     private String id;
     private String nome;
     private String descricao;
+    private String imagemb64;
+
+    public String getImagemb64() {
+        return imagemb64;
+    }
+
+    public void setImagemb64(String imagemb64) {
+        this.imagemb64 = imagemb64;
+    }
 
     // Getters e Setters
     public String getId() { return id; }
