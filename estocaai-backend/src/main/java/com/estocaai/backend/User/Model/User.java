@@ -11,10 +11,19 @@ public class User {
     @Id
     private String id;
 
+    private String name;
     private String email;
     private String password;
     private String token;
     private String fotoPerfil;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String nome) {
+        this.name = nome;
+    }
 
     public String getFotoPerfil() {
         return fotoPerfil;

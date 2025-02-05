@@ -38,13 +38,15 @@ public class UserService {
         }
     }
 
-    public User createUser(String email, String password) {
-            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(10));
-            User user = new User();
-            user.setEmail(email);
-            user.setPassword(hashedPassword);
-            userRepository.save(user);
-            return user;
+    public User createUser(String email, String password, String name) {
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(10));
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(hashedPassword);
+        user.setName(name);
+        user.setFotoPerfil(null);
+        userRepository.save(user);
+        return user;
     }
 
     public void logout(String token) {
@@ -76,6 +78,11 @@ public class UserService {
         Optional<User> userOpt = userRepository.findByToken(token);
         return userOpt.isPresent();
     }
+
+    public Optional<User> findByToken(String token) {
+        return userRepository.findByToken(token);
+    }
+
 
 
 }
