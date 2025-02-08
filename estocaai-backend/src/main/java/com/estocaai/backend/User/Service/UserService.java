@@ -59,7 +59,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-     public User atualizarFotoPerfil(String userId, String base64Foto) {
+    public User atualizarFotoPerfil(String userId, String base64Foto) {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
@@ -77,5 +77,21 @@ public class UserService {
         return userOpt.isPresent();
     }
 
+    public String getUsuarioIdFromToken(String token) {
+        if (token == null || token.trim().isEmpty()) {
+            return null;
+        }
 
+        Optional<User> userOpt = userRepository.findByToken(token);
+        return userOpt.map(User::getId).orElse(null);
+    }
+
+    public User escolherCasa(String userId, String casaId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        user.setCasaEscolhida(casaId);
+
+        return userRepository.save(user);
+    }
 }

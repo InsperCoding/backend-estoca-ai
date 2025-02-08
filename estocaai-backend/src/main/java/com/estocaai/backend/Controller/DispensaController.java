@@ -3,7 +3,7 @@ package com.estocaai.backend.Controller;
 import com.estocaai.backend.Repository.ProdutoRepository;
 import com.estocaai.backend.Classes.Dispensa;
 import com.estocaai.backend.Classes.Produto;
-import com.estocaai.backend.Repository.DispensaRepository;
+// import com.estocaai.backend.Repository.DispensaRepository;
 import com.estocaai.backend.Repository.CasaRepository;
 import com.estocaai.backend.Classes.Casa;
 import com.estocaai.backend.User.Service.UserService;
@@ -19,8 +19,8 @@ import java.util.List;
 @RequestMapping("/casas/{id_casa}/dispensas")
 public class DispensaController {
 
-    @Autowired
-    private DispensaRepository dispensaRepository;
+    // @Autowired
+    // private DispensaRepository dispensaRepository;
 
     @Autowired
     private ProdutoRepository produtoRepository;
@@ -41,6 +41,10 @@ public class DispensaController {
         Casa casa = casaRepository.findById(casaId)
                 .orElseThrow(() -> new RuntimeException("Casa não encontrada"));
         List<Dispensa> dispensas = casa.getDispensas();
+
+        String userId = userService.getUsuarioIdFromToken(token);
+        userService.escolherCasa(userId, casaId);
+
         return ResponseEntity.ok(dispensas);
     }
 
@@ -56,6 +60,10 @@ public class DispensaController {
                 .orElseThrow(() -> new RuntimeException("Casa não encontrada"));
         casa.getDispensas().add(dispensa);
         casaRepository.save(casa);
+
+        String userId = userService.getUsuarioIdFromToken(token);
+        userService.escolherCasa(userId, casaId);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(dispensa);
     }
 
@@ -69,6 +77,10 @@ public class DispensaController {
         }
         Casa casa = casaRepository.findById(casaId)
                 .orElseThrow(() -> new RuntimeException("Casa não encontrada"));
+
+        String userId = userService.getUsuarioIdFromToken(token);
+        userService.escolherCasa(userId, casaId);
+
         Dispensa dispensa = casa.getDispensas().stream()
                 .filter(d -> d.getId().equals(dispensaId))
                 .findFirst()
@@ -86,6 +98,10 @@ public class DispensaController {
         }
         Casa casa = casaRepository.findById(casaId)
                 .orElseThrow(() -> new RuntimeException("Casa não encontrada"));
+
+        String userId = userService.getUsuarioIdFromToken(token);
+        userService.escolherCasa(userId, casaId);
+        
         casa.getDispensas().removeIf(d -> d.getId().equals(dispensaId));
         casaRepository.save(casa);
         return ResponseEntity.noContent().build();
@@ -101,6 +117,10 @@ public class DispensaController {
         }
         Casa casa = casaRepository.findById(casaId)
                 .orElseThrow(() -> new RuntimeException("Casa não encontrada"));
+
+        String userId = userService.getUsuarioIdFromToken(token);
+        userService.escolherCasa(userId, casaId);
+
         Dispensa dispensa = casa.getDispensas().stream()
                 .filter(d -> d.getId().equals(dispensaId))
                 .findFirst()
@@ -120,6 +140,10 @@ public class DispensaController {
         }
         Casa casa = casaRepository.findById(casaId)
                 .orElseThrow(() -> new RuntimeException("Casa não encontrada"));
+
+        String userId = userService.getUsuarioIdFromToken(token);
+        userService.escolherCasa(userId, casaId);
+
         Dispensa dispensa = casa.getDispensas().stream()
                 .filter(d -> d.getId().equals(dispensaId))
                 .findFirst()
@@ -140,6 +164,10 @@ public class DispensaController {
         }
         Casa casa = casaRepository.findById(casaId)
                 .orElseThrow(() -> new RuntimeException("Casa não encontrada"));
+
+        String userId = userService.getUsuarioIdFromToken(token);
+        userService.escolherCasa(userId, casaId);
+
         Dispensa dispensa = casa.getDispensas().stream()
                 .filter(d -> d.getId().equals(dispensaId))
                 .findFirst()
@@ -160,6 +188,10 @@ public class DispensaController {
         }
         Casa casa = casaRepository.findById(casaId)
                 .orElseThrow(() -> new RuntimeException("Casa não encontrada"));
+
+        String userId = userService.getUsuarioIdFromToken(token);
+        userService.escolherCasa(userId, casaId);
+
         Dispensa dispensa = casa.getDispensas().stream()
                 .filter(d -> d.getId().equals(dispensaId))
                 .findFirst()

@@ -45,6 +45,8 @@ public class ListaController {
                     .body("Token inválido ou ausente!");
         }
 
+        String usuarioId = userService.getUsuarioIdFromToken(token);
+        lista.setUsuarioId(usuarioId);
         Lista novaLista = listaRepository.save(lista);
         return ResponseEntity.status(HttpStatus.CREATED).body(novaLista);
     }

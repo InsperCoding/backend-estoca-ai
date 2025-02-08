@@ -15,6 +15,7 @@ public class User {
     private String password;
     private String token;
     private String fotoPerfil;
+    private String casaEscolhida;
 
     public String getFotoPerfil() {
         return fotoPerfil;
@@ -58,5 +59,12 @@ public class User {
     }
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getCasaEscolhida() {
+        return casaEscolhida;
+    }
+    public void setCasaEscolhida(String casaEscolhida) {
+        this.casaEscolhida = casaEscolhida;
     }
 }
