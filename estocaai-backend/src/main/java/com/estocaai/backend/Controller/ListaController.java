@@ -82,6 +82,21 @@ public class ListaController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<?> getListasByUsuarioId(@PathVariable String usuarioId,
+                                                 @RequestHeader(value = "Authorization") String token) {
+        if (!userService.isTokenValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Token inválido ou ausente!");
+
+        }
+
+        List<Lista> listas = listaRepository.findAllByUsuarioId(usuarioId);
+        return ResponseEntity.ok(listas);
+
+    }
+
+
 
     @GetMapping("/{id}/produtos")
     public ResponseEntity<?> getProdutosInLista(@PathVariable String id,

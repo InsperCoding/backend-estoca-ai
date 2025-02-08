@@ -32,7 +32,7 @@ public class UserService {
             user.setToken(loginToken);
             userRepository.save(user);
 
-            return loginToken;
+            return loginToken + " " + user.getId();
         } else {
             return "Senha incorreta!";
         }
