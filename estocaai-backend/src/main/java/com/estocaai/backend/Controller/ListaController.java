@@ -46,6 +46,12 @@ public class ListaController {
         }
 
         String usuarioId = userService.getUsuarioIdFromToken(token);
+
+        if (listaRepository.findByUsuarioId(usuarioId).isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("O usuário já possui uma lista.");
+        }
+
         lista.setUsuarioId(usuarioId);
         Lista novaLista = listaRepository.save(lista);
         return ResponseEntity.status(HttpStatus.CREATED).body(novaLista);

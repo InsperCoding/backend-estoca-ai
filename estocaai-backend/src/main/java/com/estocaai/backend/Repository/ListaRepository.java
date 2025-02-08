@@ -2,12 +2,12 @@ package com.estocaai.backend.Repository;
 
 import com.estocaai.backend.Classes.Lista;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ListaRepository extends MongoRepository<Lista, String> {
-    List<Lista> findByUsuarioId(String usuarioId);
+    Optional<Lista> findByUsuarioId(String usuarioId);
 }
