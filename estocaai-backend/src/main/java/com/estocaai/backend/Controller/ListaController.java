@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/listas")
@@ -81,6 +82,21 @@ public class ListaController {
         listaRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<?> getListasByUsuarioId(@PathVariable String usuarioId,
+                                                 @RequestHeader(value = "Authorization") String token) {
+        if (!userService.isTokenValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Token inválido ou ausente!");
+
+        }
+
+        Optional<Lista> listas = listaRepository.findByUsuarioId(usuarioId);
+        return ResponseEntity.ok(listas);
+
+    }
+
 
     @GetMapping("/{id}/produtos")
     public ResponseEntity<?> getProdutosInLista(@PathVariable String id,
