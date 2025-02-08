@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ListaRepository extends MongoRepository<Lista, String> {
     List<Lista> findByUsuarioId(String usuarioId);
+
+    List<Lista> findAllByUsuarioId(String usuarioId);
 }
