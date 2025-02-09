@@ -11,8 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/listas")
@@ -47,12 +47,6 @@ public class ListaController {
         }
 
         String usuarioId = userService.getUsuarioIdFromToken(token);
-
-        if (listaRepository.findByUsuarioId(usuarioId).isPresent()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("O usuário já possui uma lista.");
-        }
-
         lista.setUsuarioId(usuarioId);
         Lista novaLista = listaRepository.save(lista);
         return ResponseEntity.status(HttpStatus.CREATED).body(novaLista);
@@ -85,16 +79,31 @@ public class ListaController {
 
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<?> getListasByUsuarioId(@PathVariable String usuarioId,
-                                                 @RequestHeader(value = "Authorization") String token) {
+                                                  @RequestHeader(value = "Authorization") String token) {
         if (!userService.isTokenValid(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Token inválido ou ausente!");
-
         }
 
-        Optional<Lista> listas = listaRepository.findByUsuarioId(usuarioId);
-        return ResponseEntity.ok(listas);
+        System.out.println("Searching for usuarioId: " + usuarioId + " (length: " + usuarioId.length() + ")");
 
+        List<Lista> allListas = listaRepository.findAll();
+        List<Lista> matchingListas = new ArrayList<>();
+
+        for (Lista lista : allListas) {
+            String listaUserId = lista.getUsuarioId();
+            if (listaUserId == null) {
+                System.out.println("Lista usuarioId: null");
+                continue;
+            }
+            System.out.println("Lista usuarioId: '" + listaUserId + "' (length: " + listaUserId.length() + ")");
+            if (listaUserId.trim().equals(usuarioId.trim())) {
+                matchingListas.add(lista);
+            }
+        }
+
+        System.out.println("Found " + matchingListas.size() + " matching listas for usuarioId: " + usuarioId);
+        return ResponseEntity.ok(matchingListas);
     }
 
 
