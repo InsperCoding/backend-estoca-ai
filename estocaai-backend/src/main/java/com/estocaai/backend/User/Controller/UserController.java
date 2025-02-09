@@ -1,4 +1,5 @@
 package com.estocaai.backend.User.Controller;
+
 import com.estocaai.backend.User.Model.User;
 import com.estocaai.backend.User.dto.UserResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +55,24 @@ public class UserController {
         }
 
         User user = userOpt.get();
-
-        // Retornar apenas os dados necessários
-        return ResponseEntity.ok(new UserResponseDTO(user.getEmail(), user.getFotoPerfil(), user.getName()));
+        return ResponseEntity.ok(new UserResponseDTO(user.getName(), user.getEmail(), user.getFotoPerfil()));
     }
 
+    @PutMapping("/users/details")
+    public ResponseEntity<?> updateUserDetails(
+            @RequestHeader(value = "Authorization") String token,
+            @RequestBody UserResponseDTO updatedUser) {
+
+        if (!userService.isTokenValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido ou ausente!");
+        }
+
+        try {
+            User savedUser = userService.updateUserDetails(token, updatedUser.getName(), updatedUser.getEmail());
+            return ResponseEntity.ok(new UserResponseDTO(savedUser.getEmail(), savedUser.getFotoPerfil(), savedUser.getName()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 
 }

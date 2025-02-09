@@ -101,4 +101,19 @@ public class UserService {
 
         return userRepository.save(user);
     }
+
+    public User updateUserDetails(String token, String newName, String newEmail) {
+        Optional<User> userOpt = userRepository.findByToken(token);
+
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("Usuário não encontrado ou token inválido");
+        }
+
+        User user = userOpt.get();
+        user.setName(newName);
+        user.setEmail(newEmail);
+
+        return userRepository.save(user);
+    }
+
 }

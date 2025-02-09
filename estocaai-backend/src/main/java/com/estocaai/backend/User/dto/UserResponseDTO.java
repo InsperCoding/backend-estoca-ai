@@ -9,9 +9,9 @@ public class UserResponseDTO {
     private String fotoPerfil;
 
     public UserResponseDTO(String email, String fotoPerfil, String name) {
+        this.name = name;
         this.email = email;
         this.fotoPerfil = fotoPerfil;
-        this.name = name;
     }
 
     public String getEmail() {
