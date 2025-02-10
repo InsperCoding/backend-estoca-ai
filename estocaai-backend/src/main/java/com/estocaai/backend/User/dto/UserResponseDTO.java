@@ -7,11 +7,13 @@ public class UserResponseDTO {
     private String name;
     private String email;
     private String fotoPerfil;
+    private String casaEscolhida;
 
-    public UserResponseDTO(String email, String fotoPerfil, String name) {
+    public UserResponseDTO(String name, String email, String fotoPerfil, String casaEscolhida) {
         this.name = name;
         this.email = email;
         this.fotoPerfil = fotoPerfil;
+        this.casaEscolhida = casaEscolhida;
     }
 
     public String getEmail() {
@@ -36,5 +38,13 @@ public class UserResponseDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCasaEscolhida() {
+        return casaEscolhida;
+    }
+
+    public void setCasaEscolhida(String casaEscolhida) {
+        this.casaEscolhida = casaEscolhida;
     }
 }

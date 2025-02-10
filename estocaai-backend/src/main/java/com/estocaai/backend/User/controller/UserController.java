@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.estocaai.backend.User.service.UserService;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -55,7 +56,7 @@ public class UserController {
         }
 
         User user = userOpt.get();
-        return ResponseEntity.ok(new UserResponseDTO(user.getName(), user.getEmail(), user.getFotoPerfil()));
+        return ResponseEntity.ok(new UserResponseDTO(user.getName(), user.getEmail(), user.getFotoPerfil(), user.getCasaEscolhida()));
     }
 
     @PutMapping("/users/details")
@@ -69,10 +70,21 @@ public class UserController {
 
         try {
             User savedUser = userService.updateUserDetails(token, updatedUser.getName(), updatedUser.getEmail());
-            return ResponseEntity.ok(new UserResponseDTO(savedUser.getEmail(), savedUser.getFotoPerfil(), savedUser.getName()));
+            return ResponseEntity.ok(new UserResponseDTO(savedUser.getName(), savedUser.getEmail(), savedUser.getFotoPerfil(), savedUser.getCasaEscolhida()));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }
+
+    @PutMapping("/selecionar/casa")
+    public ResponseEntity<?> selecionarCasa(@RequestHeader("Authorization") String token, @RequestBody Map<String, String> body) {
+        if (!userService.isTokenValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido ou ausente!");
+        }
+
+        String casaId = body.get("casaId");
+        User user = userService.escolherCasa(userService.getUsuarioIdFromToken(token), casaId);
+        return ResponseEntity.ok(user);
     }
 
 }
