@@ -1,6 +1,8 @@
 package com.estocaai.backend.User.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.estocaai.backend.User.model.User;
@@ -16,26 +18,23 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public String login(String email, String rawPassword) {
+    public ResponseEntity<String> login(String email, String rawPassword) {
         Optional<User> userOpt = userRepository.findByEmail(email);
-
         if (userOpt.isEmpty()) {
-            return "Usuário não encontrado";
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Usuário não encontrado");
         }
 
         User user = userOpt.get();
-        boolean passwordMatches = BCrypt.checkpw(rawPassword, user.getPassword());
-
-        if (passwordMatches) {
-            String loginToken = UUID.randomUUID().toString();
-
-            user.setToken(loginToken);
-            userRepository.save(user);
-
-            return loginToken + " " + user.getId();
-        } else {
-            return "Senha incorreta!";
+        if (!BCrypt.checkpw(rawPassword, user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Senha incorreta!");
         }
+
+        String loginToken = UUID.randomUUID().toString();
+        user.setToken(loginToken);
+        userRepository.save(user);
+        return ResponseEntity.ok(loginToken + " " + user.getId());
     }
 
     public User createUser(String email, String password, String name) {

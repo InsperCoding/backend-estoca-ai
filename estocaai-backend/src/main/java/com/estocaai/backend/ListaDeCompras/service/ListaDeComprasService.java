@@ -54,7 +54,20 @@ public class ListaDeComprasService {
         }
         ListaDeCompras lista = listaDeComprasRepository.findByCasaId(casaId)
                 .orElseThrow(() -> new RuntimeException("Lista de compras não encontrada!"));
-        lista.removerProduto(produtoId, quantidade);
+
+        int index = lista.getProdutosIds().indexOf(produtoId);
+        if (index == -1) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado na lista!");
+        }
+        int currQuantity = lista.getProdutosQuantidades().get(index);
+        if (quantidade >= currQuantity) {
+            // Remove completely if removal quantity is equal or higher than current
+            lista.getProdutosIds().remove(index);
+            lista.getProdutosQuantidades().remove(index);
+        } else {
+            // Otherwise, subtract the quantity
+            lista.getProdutosQuantidades().set(index, currQuantity - quantidade);
+        }
         listaDeComprasRepository.save(lista);
         return ResponseEntity.ok(lista);
     }

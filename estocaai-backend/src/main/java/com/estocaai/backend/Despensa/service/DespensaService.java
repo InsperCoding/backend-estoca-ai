@@ -45,7 +45,14 @@ public class DespensaService {
         if (!produtoRepository.existsById(produtoId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado!");
         }
-        despensa.adicionarProduto(produtoId, quantidade);
+        int index = despensa.getProdutosIds().indexOf(produtoId);
+        if (index != -1) {
+            int currentQuantity = despensa.getProdutosQuantidades().get(index);
+            despensa.getProdutosQuantidades().set(index, currentQuantity + quantidade);
+        } else {
+            despensa.getProdutosIds().add(produtoId);
+            despensa.getProdutosQuantidades().add(quantidade);
+        }
         despensaRepository.save(despensa);
         return ResponseEntity.ok(despensa);
     }
